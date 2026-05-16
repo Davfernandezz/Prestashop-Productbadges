@@ -8,6 +8,8 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
+require_once __DIR__ . '/classes/ProductBadge.php';
+
 class ProductBadges extends Module
 {
     public function __construct()
@@ -236,7 +238,7 @@ class ProductBadges extends Module
         return $helper->generateForm([$fields_form]);
     }
 
-    
+
     // HOOKS 
 
     public function hookDisplayProductListingHook($params)

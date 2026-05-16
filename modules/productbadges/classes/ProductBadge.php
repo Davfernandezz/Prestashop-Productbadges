@@ -8,8 +8,6 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-require_once __DIR__ . '/classes/ProductBadge.php';
-
 class ProductBadge extends ObjectModel
 {
     /** @var string Color de fondo */
