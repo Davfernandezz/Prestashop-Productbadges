@@ -1,0 +1,36 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Logs
+*.log
+
+# Environment 
+.env
+.env.local
+
+# Dependencies 
+vendor/
+node_modules/
+
+# PrestaShop cache
+cache/
+var/cache/
+var/logs/
+app/cache/
+img/tmp/
+
+# Archives
+*.zip
+*.tar
+*.gz
+
+# IA files
+!.claude/
+!.claude/**
+!.opencode/
+!.opencode/**
+!.cursor/
+!.cursor/**
