@@ -244,15 +244,86 @@ class ProductBadges extends Module
     public function hookDisplayProductListingHook($params)
     {
 
+        if (!(int) Configuration::get('PRODUCTBADGES_ENABLED')) {
+            return '';
+        }
+        if (!(int) Configuration::get('PRODUCTBADGES_SHOW_LISTING')) {
+            return '';
+        }
+
+        if (empty($params['product']['id_product'])) {
+            return '';
+        }
+
+        $idProduct = (int) $params['product']['id_product'];
+        $idLang    = (int) $this->context->language->id;
+        $idShop    = (int) $this->context->shop->id;
+        $maxBadges = (int) Configuration::get('PRODUCTBADGES_MAX_BADGES');
+
+        $badges = ProductBadge::getByProduct($idProduct, $idLang, $idShop, $maxBadges);
+
+        if (empty($badges)) {
+            return '';
+        }
+
+        $this->context->smarty->assign('badges', $badges);
+
+        return $this->display(__FILE__, 'views/templates/hook/product-badges.tpl');
     }
 
+    /**
+     * Hook de ficha de producto
+     */
     public function hookDisplayProductAdditionalInfo($params)
     {
+        if (!(int) Configuration::get('PRODUCTBADGES_ENABLED')) {
+            return '';
+        }
+        if (!(int) Configuration::get('PRODUCTBADGES_SHOW_PRODUCT')) {
+            return '';
+        }
 
+        if (empty($params['product']['id_product'])) {
+            return '';
+        }
+
+        $idProduct = (int) $params['product']['id_product'];
+        $idLang    = (int) $this->context->language->id;
+        $idShop    = (int) $this->context->shop->id;
+        $maxBadges = (int) Configuration::get('PRODUCTBADGES_MAX_BADGES');
+
+        $badges = ProductBadge::getByProduct($idProduct, $idLang, $idShop, $maxBadges);
+
+        if (empty($badges)) {
+            return '';
+        }
+
+        $this->context->smarty->assign('badges', $badges);
+
+        return $this->display(__FILE__, 'views/templates/hook/product-badges.tpl');
     }
 
+    /**
+     * Hook displayHeader: carga CSS y JS solo en páginas donde se muestran badges
+     */
     public function hookDisplayHeader($params)
     {
+        if (!(int) Configuration::get('PRODUCTBADGES_ENABLED')) {
+            return;
+        }
 
+        $controller = Tools::getValue('controller');
+
+        $allowedControllers = ['category', 'product', 'search', 'index'];
+
+        if (in_array($controller, $allowedControllers, true)) {
+            $this->context->controller->addCSS(
+                $this->_path . 'views/css/productbadges.css',
+                'all'
+            );
+            $this->context->controller->addJS(
+                $this->_path . 'views/js/productbadges.js'
+            );
+        }
     }
 }
