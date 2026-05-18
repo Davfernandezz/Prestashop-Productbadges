@@ -5,16 +5,37 @@
 (function ($) {
     'use strict';
 
-    $(document).ready(function () {
-        // Aseguramos que el contenedor padre de las imágenes
-        // tenga position:relative para que los badges se posicionen bien.
-        // El CSS ya lo hace para .product-thumbnail y .product-cover,
-        // pero algunos temas custom pueden necesitar este fallback.
-        $('.productbadges-wrapper').each(function () {
-            var $parent = $(this).parent();
-            if ($parent.css('position') === 'static') {
-                $parent.css('position', 'relative');
+    function moveBadgeToProductImage($wrapper) {
+        var $miniature = $wrapper.closest('.product-miniature');
+
+        if ($miniature.length) {
+            var $thumbnail = $miniature.find('.thumbnail-container').first();
+
+            if ($thumbnail.length) {
+                $thumbnail.css('position', 'relative');
+                $thumbnail.prepend($wrapper);
+                return;
             }
+        }
+
+        var $productCover = $('.product-cover').first();
+
+        if ($productCover.length) {
+            $productCover.css('position', 'relative');
+            $productCover.prepend($wrapper);
+            return;
+        }
+
+        var $parent = $wrapper.parent();
+
+        if ($parent.css('position') === 'static') {
+            $parent.css('position', 'relative');
+        }
+    }
+
+    $(document).ready(function () {
+        $('.productbadges-wrapper').each(function () {
+            moveBadgeToProductImage($(this));
         });
     });
 

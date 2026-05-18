@@ -51,6 +51,7 @@ class ProductBadges extends Module
         // Hooks reales del tema Classic para listados en PrestaShop 1.7.8.x
         $hooks = [
             'displayProductListingHook',
+            'displayProductPriceBlock',
             'displayProductAdditionalInfo',
             'displayHeader',
         ];
@@ -243,11 +244,52 @@ class ProductBadges extends Module
 
     public function hookDisplayProductListingHook($params)
     {
-
         if (!(int) Configuration::get('PRODUCTBADGES_ENABLED')) {
             return '';
         }
         if (!(int) Configuration::get('PRODUCTBADGES_SHOW_LISTING')) {
+            return '';
+        }
+
+        if (empty($params['product']['id_product'])) {
+            return '';
+        }
+
+        $idProduct = (int) $params['product']['id_product'];
+        $idLang    = (int) $this->context->language->id;
+        $idShop    = (int) $this->context->shop->id;
+        $maxBadges = (int) Configuration::get('PRODUCTBADGES_MAX_BADGES');
+
+        $badges = ProductBadge::getByProduct($idProduct, $idLang, $idShop, $maxBadges);
+
+        if (empty($badges)) {
+            return '';
+        }
+
+        $this->context->smarty->assign('badges', $badges);
+
+        return $this->display(__FILE__, 'views/templates/hook/product-badges.tpl');
+    }
+
+    /**
+     * Hook usado por el tema Classic en tarjetas de producto/listados.
+     */
+    public function hookDisplayProductPriceBlock($params)
+    {
+        if (!(int) Configuration::get('PRODUCTBADGES_ENABLED')) {
+            return '';
+        }
+        if (!(int) Configuration::get('PRODUCTBADGES_SHOW_LISTING')) {
+            return '';
+        }
+
+        // Evita pintar badges duplicadas en la ficha de producto.
+        if (Tools::getValue('controller') === 'product') {
+            return '';
+        }
+
+        // En Classic este hook se ejecuta varias veces; usamos before_price.
+        if (empty($params['type']) || $params['type'] !== 'before_price') {
             return '';
         }
 
@@ -309,7 +351,7 @@ class ProductBadges extends Module
     public function hookDisplayHeader($params)
     {
         if (!(int) Configuration::get('PRODUCTBADGES_ENABLED')) {
-            return;
+            return '';
         }
 
         $controller = Tools::getValue('controller');
@@ -325,5 +367,7 @@ class ProductBadges extends Module
                 $this->_path . 'views/js/productbadges.js'
             );
         }
+
+        return '';
     }
 }

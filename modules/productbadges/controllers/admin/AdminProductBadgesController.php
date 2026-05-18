@@ -225,9 +225,22 @@ class AdminProductBadgesController extends ModuleAdminController
 
             // Guardar asignación de productos
             if ($this->object && $this->object->id) {
-                $rawIds    = Tools::getValue('product_ids', '');
+                $idBadge = (int) $this->object->id;
+                $idShop = (int) $this->context->shop->id;
+
+                Db::getInstance()->delete(
+                    'productbadges_shop',
+                    '`id_badge` = ' . $idBadge . ' AND `id_shop` = ' . $idShop
+                );
+
+                Db::getInstance()->insert('productbadges_shop', [
+                    'id_badge' => $idBadge,
+                    'id_shop' => $idShop,
+                ]);
+
+                $rawIds = Tools::getValue('product_ids', '');
                 $productIds = $this->parseProductIds($rawIds);
-                ProductBadge::saveProductAssignments((int) $this->object->id, $productIds);
+                ProductBadge::saveProductAssignments($idBadge, $productIds);
             }
 
             return $result;

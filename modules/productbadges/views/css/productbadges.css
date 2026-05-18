@@ -4,16 +4,14 @@
 
 .productbadges-wrapper {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    pointer-events: none; 
-    z-index: 10;
+    top: 8px;
+    left: 8px;
+    z-index: 30;
+    pointer-events: none;
 }
 
 .productbadge {
     display: inline-block;
-    position: absolute;
     padding: 4px 8px;
     font-size: 11px;
     font-weight: 700;
@@ -31,9 +29,19 @@
 .productbadge--top-right {
     top: 8px;
     right: 8px;
+    left: auto;
 }
 
-.product-thumbnail,
-.product-cover {
+.product-cover,
+.thumbnail-container {
     position: relative;
+}
+
+/**
+ * Oculta la etiqueta NEW nativa del tema Classic para que no se duplique
+ * con la badge personalizada del módulo.
+ */
+.product-flags .product-flag.new,
+.product-flags .new {
+    display: none !important;
 }

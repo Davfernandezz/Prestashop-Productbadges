@@ -72,7 +72,11 @@ Durante la prueba se verificó correctamente:
 - La pestaña **Catálogo → Product Badges** se registró correctamente.
 - El formulario de creación de badges se mostró correctamente.
 - Se pudo crear una badge de prueba con texto, colores, posición, estado activo e IDs de producto.
-- Los hooks `displayProductAdditionalInfo` y `displayProductListingHook` aparecieron registrados en **Diseño → Posiciones**.
+- Se pudo crear más de una badge y asignarlas a productos distintos.
+- Los hooks del módulo aparecieron registrados en **Diseño → Posiciones**.
+- Se comprobó la visualización de badges en frontend.
+- Se verificó que las badges personalizadas aparecen sobre los productos en el tema Classic.
+- Se comprobó la carga de CSS y JS propios del módulo sin librerías externas.
 
 ### Capturas de prueba
 
@@ -92,13 +96,25 @@ Durante la prueba se verificó correctamente:
 
 ![Hooks registrados del módulo](docs/screenshots/manage-hooks.png)
 
-### Nota sobre frontend
+#### Visualización en frontend
 
-La instalación, configuración, registro de hooks y gestión desde back office funcionaron correctamente.
+![Badges visibles en frontend](docs/screenshots/frontend-prestashop.png)
 
-Durante la prueba frontend se comprobó que la visualización en listados depende del hook ejecutado por el tema activo. El módulo registra `displayProductListingHook`, pero en el tema Classic de PrestaShop 1.7.8.11 puede requerirse adaptar la plantilla del tema o usar un hook alternativo para pintar la badge exactamente encima de cada producto del listado.
+#### Tipos de badges creadas
 
-Esta limitación queda documentada porque el enunciado indica que algunos contextos de listado, búsqueda y home dependen de si el tema activo los soporta.
+![Tipos de badges creadas](docs/screenshots/product-badges-types.png)
+
+### Prueba frontend
+
+Después de ajustar los hooks y la carga visual de las badges, se comprobó que el módulo muestra correctamente las etiquetas en el frontend del tema Classic de PrestaShop 1.7.8.11.
+
+Se verificó:
+
+- Visualización de badges sobre productos en el listado.
+- Visualización de badges en la ficha de producto.
+- Asignación correcta de badges por ID de producto.
+- Funcionamiento con varias badges creadas desde el back office.
+- Carga de estilos y scripts propios del módulo sin librerías externas.
 
 ## Decisiones técnicas
 
@@ -197,10 +213,12 @@ No se ha implementado una interfaz avanzada para gestionar badges distintas por 
 │           └── en.php
 ├── docs/
 │   └── screenshots/
+│       ├── create-productbadge.png
+│       ├── frontend-prestashop.png
+│       ├── manage-hooks.png
 │       ├── module-admin.png
 │       ├── module-admin2.png
-│       ├── create-productbadge.png
-│       └── manage-hooks.png
+│       └── product-badges-types.png
 └── .gitignore
 ```
 
@@ -209,7 +227,7 @@ No se ha implementado una interfaz avanzada para gestionar badges distintas por 
 - **Selector visual de productos**: el campo de IDs de producto es un textarea de texto libre por limitación de tiempo. En producción se integraría con el autocomplete de productos de PrestaShop.
 - **Tests unitarios**: no se han implementado.
 - **Gestión diferenciada por tienda**: la estructura multitienda está preparada, pero no se ha añadido una interfaz avanzada para elegir tiendas manualmente por badge.
-- **Adaptación específica de plantilla para todos los temas**: el hook `displayProductListingHook` queda registrado, pero algunos temas pueden requerir adaptar la plantilla o usar un hook alternativo.
+- **Compatibilidad visual con todos los temas**: se ha probado con el tema Classic de PrestaShop 1.7.8.11. En otros temas puede requerir pequeños ajustes de CSS o hooks.
 - **Orden visual avanzado de badges**: se muestran ordenadas por ID.
 
 ## Asunciones tomadas
@@ -218,7 +236,7 @@ No se ha implementado una interfaz avanzada para gestionar badges distintas por 
 - Se asume que el administrador conoce los IDs de producto, ya que no se ha implementado autocomplete.
 - El campo `position` admite solo `top-left` y `top-right`.
 - El posicionamiento real se controla vía CSS en la plantilla.
-- La visualización en listados depende de los hooks que ejecute el tema activo.
+- La visualización frontend se ha validado sobre el tema Classic de PrestaShop 1.7.8.11.
 - El módulo prioriza instalación limpia, estructura clara, validación server-side y uso de APIs nativas de PrestaShop.
 
 ## Uso de IA
